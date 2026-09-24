@@ -1,6 +1,8 @@
-# GEO MAPID Explorer — Flutter Map Case Study
+# GEO MAPID Explorer - Flutter Map Case Study
 
 A Flutter mobile application built with **Clean Architecture** and **BLoC** pattern that consumes vector/GeoJSON map layers from GEO MAPID, renders them using **MapLibre GL** over **OpenFreeMap** basemap styles, supports interactive feature details popups, and captures real-time user GPS location.
+
+https://github.com/user-attachments/assets/e1d397b4-9ab1-4551-9c7e-00245ac3967b
 
 ---
 
