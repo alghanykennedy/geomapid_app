@@ -1,55 +1,77 @@
-import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
-import '../core/constants/app_colors.dart';
-import '../core/constants/app_constants.dart';
 import '../core/utils/logger.dart';
 
 class MapService {
-  MapLibreMapController? _controller;
-  Symbol? _userLocationSymbol;
+  MaplibreMapController? _controller;
+  static const _userLocationSourceId = 'user-location-source';
+  static const _userLocationLayerId = 'user-location-layer';
 
-  void setController(MapLibreMapController controller) {
+  void setController(MaplibreMapController controller) {
     _controller = controller;
   }
 
-  MapLibreMapController? get controller => _controller;
+  MaplibreMapController? get controller => _controller;
 
-  /// Load GeoJSON features onto the map as a source and circle/symbol layer
+  /// Load GeoJSON point features as interactive symbol annotations.
   Future<void> loadGeoJsonLayer(Map<String, dynamic> geoJsonData) async {
     if (_controller == null) {
-      AppLogger.w('MapController is null when attempting to load GeoJSON layer');
+      AppLogger.w(
+          'MapController is null when attempting to load GeoJSON layer');
       return;
     }
 
     try {
-      // 1. Remove existing layer & source if re-loading
-      await _controller!.removeLayer(AppConstants.circleLayerId).catchError((_) {});
-      await _controller!.removeSource(AppConstants.geoJsonSourceId).catchError((_) {});
+      final bytes = await rootBundle.load('assets/markers/img_marker.png');
+      await _controller!.addImage('geo-mapid-pin', bytes.buffer.asUint8List());
+      await _controller!.clearSymbols();
 
-      // 2. Add GeoJSON Source
-      final String rawGeoJsonString = jsonEncode(geoJsonData);
-      await _controller!.addSource(
-        AppConstants.geoJsonSourceId,
-        GeoJsonSourceProperties(data: rawGeoJsonString),
-      );
+      final features = geoJsonData['features'];
+      if (features is! List) {
+        AppLogger.w('GeoJSON layer does not contain a features array');
+        return;
+      }
 
-      // 3. Add Circle Layer for Point rendering
-      await _controller!.addCircleLayer(
-        AppConstants.geoJsonSourceId,
-        AppConstants.circleLayerId,
-        const CircleLayerProperties(
-          circleColor: '#E53935', // Primary Red
-          circleRadius: 8.0,
-          circleStrokeWidth: 2.0,
-          circleStrokeColor: '#FFFFFF',
-          circleOpacity: 0.85,
-        ),
-      );
+      final options = <SymbolOptions>[];
+      final data = <Map>[];
+      for (final feature in features) {
+        if (feature is! Map) continue;
+        final geometry = feature['geometry'];
+        final coordinates = geometry is Map ? geometry['coordinates'] : null;
+        if (geometry is! Map ||
+            geometry['type'] != 'Point' ||
+            coordinates is! List) {
+          continue;
+        }
+        if (coordinates.length < 2 ||
+            coordinates[0] is! num ||
+            coordinates[1] is! num) {
+          continue;
+        }
 
-      AppLogger.i('Successfully added GeoJSON source and circle layer to MapLibre');
+        final properties = feature['properties'];
+        options.add(
+          SymbolOptions(
+            geometry: LatLng(
+              (coordinates[1] as num).toDouble(),
+              (coordinates[0] as num).toDouble(),
+            ),
+            iconImage: 'geo-mapid-pin',
+            iconSize: 0.3,
+          ),
+        );
+        data.add(properties is Map
+            ? Map<String, dynamic>.from(properties)
+            : <String, dynamic>{});
+      }
+
+      if (options.isNotEmpty) {
+        await _controller!.addSymbols(options, data);
+      }
+      AppLogger.i(
+          'Successfully added ${options.length} interactive symbols to MapLibre');
     } catch (e) {
-      AppLogger.e('Failed to add GeoJSON layer to map', e);
+      AppLogger.e('Failed to add GeoJSON symbols to map', e);
     }
   }
 
@@ -58,23 +80,42 @@ class MapService {
     if (_controller == null) return;
 
     try {
-      if (_userLocationSymbol != null) {
-        await _controller!.removeSymbol(_userLocationSymbol!);
-      }
+      final userLocationGeoJson = {
+        'type': 'FeatureCollection',
+        'features': [
+          {
+            'type': 'Feature',
+            'properties': const {},
+            'geometry': {
+              'type': 'Point',
+              'coordinates': [userLatLng.longitude, userLatLng.latitude],
+            },
+          },
+        ],
+      };
 
-      _userLocationSymbol = await _controller!.addSymbol(
-        SymbolOptions(
-          geometry: userLatLng,
-          iconImage: 'user_marker_icon',
-          iconSize: 1.5,
-          iconColor: '#1976D2',
+      await _controller!.removeLayer(_userLocationLayerId).catchError((_) {});
+      await _controller!.removeSource(_userLocationSourceId).catchError((_) {});
+      await _controller!.addGeoJsonSource(
+        _userLocationSourceId,
+        userLocationGeoJson,
+      );
+      await _controller!.addCircleLayer(
+        _userLocationSourceId,
+        _userLocationLayerId,
+        const CircleLayerProperties(
+          circleColor: '#1976D2',
+          circleRadius: 9,
+          circleStrokeWidth: 3,
+          circleStrokeColor: '#FFFFFF',
+          circleOpacity: 1,
         ),
       );
 
-      AppLogger.i('Updated user location marker at: ${userLatLng.latitude}, ${userLatLng.longitude}');
+      AppLogger.i(
+          'Updated user location marker at: ${userLatLng.latitude}, ${userLatLng.longitude}');
     } catch (e) {
-      // Fallback if custom icon not preloaded, add simple circle marker via latLng camera move
-      AppLogger.w('Could not add symbol marker, moving camera to user location');
+      AppLogger.e('Could not add user location marker', e);
     }
   }
 
@@ -84,21 +125,5 @@ class MapService {
     await _controller!.animateCamera(
       CameraUpdate.newLatLngZoom(latLng, zoom),
     );
-  }
-
-  /// Query features near tap point
-  Future<List<dynamic>> queryFeaturesAtPoint(Point<double> point) async {
-    if (_controller == null) return [];
-    try {
-      final features = await _controller!.queryRenderedFeatures(
-        point,
-        [AppConstants.circleLayerId],
-        null,
-      );
-      return features;
-    } catch (e) {
-      AppLogger.e('Error querying features at point', e);
-      return [];
-    }
   }
 }

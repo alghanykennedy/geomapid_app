@@ -135,7 +135,7 @@ packages:
     source: hosted
     version: "1.0.8"
   dartz:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: dartz
       sha256: e6acf34ad2e31b1eb00948692468c30ab48ac8250e0f0df661e29f12dd252168
@@ -159,7 +159,7 @@ packages:
     source: hosted
     version: "0.4.1"
   dio:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: dio
       sha256: "852ec3b48cc431ac04fff978413c541502b67ffc3e26921e74e3d994694192c1"
@@ -175,7 +175,7 @@ packages:
     source: hosted
     version: "2.2.2"
   equatable:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: equatable
       sha256: ea36e500cbf0ec18361deabca755434f73e42fe53c5130021c7e2d6b5ebe1702
@@ -220,7 +220,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_bloc:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_bloc
       sha256: cf51747952201a455a1c840f8171d273be009b932c75093020f9af64f2123e38
@@ -228,7 +228,7 @@ packages:
     source: hosted
     version: "9.1.1"
   flutter_dotenv:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_dotenv
       sha256: d41da11fb497314fbf89811ec30af02d1d898b47980a129f0a8c0a1720460ba2
@@ -270,7 +270,7 @@ packages:
     source: hosted
     version: "0.1.1"
   geolocator:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: geolocator
       sha256: "79939537046c9025be47ec645f35c8090ecadb6fe98eba146a0d25e8c1357516"
@@ -278,13 +278,13 @@ packages:
     source: hosted
     version: "14.0.2"
   geolocator_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: geolocator_android
-      sha256: "86ea1654e4f61ff51466848e91c116b422d6010ea269fda0fbe1af7e9e742ce1"
+      sha256: "7aefc530db47d90d0580b552df3242440a10fe60814496a979aa67aa98b1fd47"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.3"
+    version: "4.6.1"
   geolocator_apple:
     dependency: transitive
     description:
@@ -326,7 +326,7 @@ packages:
     source: hosted
     version: "0.2.5"
   get_it:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: get_it
       sha256: "2b5c6b077aad30bba9782178baff6076a2044141f1d5f2f15b43bca3fbe74874"
@@ -430,7 +430,7 @@ packages:
     source: hosted
     version: "4.0.0"
   logger:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: logger
       sha256: "2a0dc097e7b01d942475bdd552356db2d0f768b05540bd4b2b53f1840f2239a7"
@@ -454,29 +454,29 @@ packages:
     source: hosted
     version: "0.1.2-main.4"
   maplibre_gl:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: maplibre_gl
-      sha256: d9773555ae4ebab94bbc3ae2176b077cfda486ec729eefe01e1613f164cb8410
+      sha256: "9dd9eebee52f42a45aaa9cdb912afa47845c37007b26a799aa482ecd368804c8"
       url: "https://pub.dev"
     source: hosted
-    version: "0.25.0"
+    version: "0.19.0+2"
   maplibre_gl_platform_interface:
     dependency: transitive
     description:
       name: maplibre_gl_platform_interface
-      sha256: bd7de401dea24dd7e8a6f2fa736ddee7dbbee3e24a9027f0afdd619994702047
+      sha256: a95fa38a3532253f32dfe181389adfe9f402773e58ac902d9c4efad3209e0903
       url: "https://pub.dev"
     source: hosted
-    version: "0.25.0"
+    version: "0.19.0+2"
   maplibre_gl_web:
     dependency: transitive
     description:
       name: maplibre_gl_web
-      sha256: af0e48bf96e8dd99f8b958a1953126971eb8a0527b9735441d4f24df3913f5a2
+      sha256: "7f1540b384f16f3c9bc8b4ebdfca96fb07f6dab5d9ef4dd0e102985dba238691"
       url: "https://pub.dev"
     source: hosted
-    version: "0.25.0"
+    version: "0.19.0+2"
   matcher:
     dependency: transitive
     description:
@@ -566,7 +566,7 @@ packages:
     source: hosted
     version: "1.9.0"
   permission_handler:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: permission_handler
       sha256: fe54465bcc62a4564c6e4db337bbaded6c0c0fa6e10487414436d163114784f6
@@ -574,13 +574,13 @@ packages:
     source: hosted
     version: "12.0.3"
   permission_handler_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: permission_handler_android
-      sha256: "1e3bc410ca1bf84662104b100eb126e066cb55791b7451307f9708d4007350e6"
+      sha256: "2f1bec180ee2f5665c22faada971a8f024761f632e93ddc23310487df52dcfa6"
       url: "https://pub.dev"
     source: hosted
-    version: "13.0.1"
+    version: "12.0.1"
   permission_handler_apple:
     dependency: transitive
     description:

@@ -34,7 +34,7 @@ class AppErrorView extends StatelessWidget {
                   color: AppColors.error,
                 ),
                 const SizedBox(height: AppDimens.paddingMd),
-                Text(
+                const Text(
                   'Failed to load data',
                   style: AppTextStyles.titleMedium,
                   textAlign: TextAlign.center,

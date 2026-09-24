@@ -13,18 +13,29 @@ class FeaturePopupCard extends StatelessWidget {
     required this.onClose,
   });
 
+  String? _getValue(List<String> keys) {
+    for (final key in keys) {
+      if (properties.containsKey(key) && properties[key] != null) {
+        final val = properties[key].toString();
+        if (val.isNotEmpty) return val;
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final title = properties['NAMA']?.toString() ??
-        properties['title']?.toString() ??
-        properties['name']?.toString() ??
+    final title = _getValue(['NAMA', 'nama', 'title', 'Title', 'name', 'Name']) ??
         'Feature Details';
 
-    final address = properties['ALAMAT']?.toString();
-    final district = properties['KECAMATAN']?.toString();
-    final regency = properties['KABKOT']?.toString();
-    final province = properties['PROVINSI']?.toString();
-    final time = properties['WAKTU']?.toString();
+    final address = _getValue(['ALAMAT', 'alamat', 'address', 'Address']);
+    final district = _getValue(['KECAMATAN', 'kecamatan', 'district', 'District']);
+    final regency = _getValue(['KABKOT', 'kabkot', 'kabupaten', 'regency', 'Regency']);
+    final village = _getValue(['DESA', 'desa', 'village', 'Village']);
+    final province = _getValue(['PROVINSI', 'provinsi', 'province', 'Province']);
+    final time = _getValue(['WAKTU', 'waktu', 'time', 'Time']);
+    final latitude = _getValue(['Latitude', 'latitude', 'lat', 'Lat']);
+    final longitude = _getValue(['Longitude', 'longitude', 'lng', 'Lng', 'long', 'Long']);
 
     return Card(
       margin: const EdgeInsets.all(AppDimens.paddingMd),
@@ -83,6 +94,12 @@ class FeaturePopupCard extends StatelessWidget {
                 label: 'Kecamatan / Kab',
                 value: regency != null ? '$district, $regency' : district,
               ),
+            if (village != null && village.isNotEmpty)
+              _buildAttributeRow(
+                icon: Icons.home_work_outlined,
+                label: 'Desa',
+                value: village,
+              ),
             if (province != null && province.isNotEmpty)
               _buildAttributeRow(
                 icon: Icons.public_outlined,
@@ -94,6 +111,12 @@ class FeaturePopupCard extends StatelessWidget {
                 icon: Icons.access_time_outlined,
                 label: 'Waktu Data',
                 value: time,
+              ),
+            if (latitude != null && longitude != null)
+              _buildAttributeRow(
+                icon: Icons.my_location_outlined,
+                label: 'Coordinates',
+                value: '$latitude, $longitude',
               ),
 
             // Additional dynamic key-values if default fields aren't found
@@ -142,11 +165,23 @@ class FeaturePopupCard extends StatelessWidget {
   }
 
   List<Widget> _buildExtraProperties() {
-    final knownKeys = {'NAMA', 'ALAMAT', 'PROVINSI', 'KABKOT', 'KECAMATAN', 'DESA', 'WAKTU'};
+    final knownKeys = {
+      'NAMA',
+      'ALAMAT',
+      'PROVINSI',
+      'KABKOT',
+      'KECAMATAN',
+      'DESA',
+      'WAKTU',
+      'Latitude',
+      'Longitude',
+    };
     final extras = <Widget>[];
 
     properties.forEach((key, val) {
-      if (!knownKeys.contains(key) && val != null && val.toString().isNotEmpty) {
+      if (!knownKeys.contains(key) &&
+          val != null &&
+          val.toString().isNotEmpty) {
         extras.add(
           _buildAttributeRow(
             icon: Icons.info_outline,
